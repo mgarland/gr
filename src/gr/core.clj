@@ -1,5 +1,10 @@
 (ns gr.core
+  (:require [clojure.java.io :as io]
+            [clojure.string :as str])
   (:gen-class))
+
+;; field names
+(def ^:const field-names [:LastName :FirstName :Gender :FavoriteColor :DateOfBirth])
 
 ;;
 ;; command line argument validation
@@ -15,6 +20,12 @@
 (defn validate-sort-option [val]
   (#{1 2 3} val))
 
+;;
+;; file load
+;;
+;; read lines from file
+(defn get-lines [file]
+  (line-seq (io/reader file)))
 
 
 (defn -main
@@ -23,7 +34,7 @@
   (let [[file-name sort-option] args
         is-sort-option-valid? (validate-sort-option sort-option)]
     (if is-sort-option-valid?
-        nil
-        (usage))))
+      (count (get-lines file-name))
+      (usage))))
 
 
