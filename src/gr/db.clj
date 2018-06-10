@@ -6,7 +6,6 @@
 
 (defn add [record]
   "Adds a record to the db"
-  (println record)
   (swap! db
          (fn [d]
            (assoc d :data (assoc (:data d) (:next-seq d) record) :next-seq (inc (:next-seq d))))))
