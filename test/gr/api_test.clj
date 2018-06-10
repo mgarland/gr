@@ -1,3 +1,3 @@
-(ns gr.core-test
+(ns gr.api-test
   (:require [clojure.test :refer :all]))
 
