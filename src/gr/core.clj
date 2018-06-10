@@ -31,42 +31,76 @@
 ;; one regex to handle all delimiter possibilities
 (def ^:const delims-re #"\s+\|\s+|,\s+|\s+")
 
-;; slurp the file (lazily)
 (defn get-lines [file]
+  "Slurps the file (lazily)"
   (line-seq (io/reader file)))
 
-;; separate the fields in the line
 (defn split-lines [lines]
+  "Separate the fields in the line"
   (map #(str/split % delims-re) lines))
 
-;; do field transformations here
 (defn transform-record [record]
+  "Perform field transformations"
   (let [dob-dt (.parse date-format (:DateOfBirth record))]
     (assoc record :DateOfBirth dob-dt)))
 
-;; creates a record (HashMap) from the field values
 (defn create-record [names values]
+  "Creates a record (HashMap) from the field values"
   (zipmap names values))
 
 (defn create-records [lines]
+  "Creates all of the records and invokes field transformations"
   (map #(transform-record %)
        (map #(create-record field-names %) lines)))
+
+(defn sort-record-fns [sort-option records]
+  "Sort option functions"
+  (cond
+    (= 1 sort-option) (sort-by (juxt :Gender :LastName) records)
+    (= 2 sort-option) (sort-by :DateOfBirth records)
+    (= 3 sort-option) (sort-by :LastName (comp - compare) records)
+    :else (throw (IllegalArgumentException. (str "Invalid sort-option: " sort-option)))))
 
 ;;
 ;; Output Processing
 ;;
+(defn format-record [record]
+  "Format a record for display"
+  (let [{last-name  :LastName
+         first-name :FirstName
+         gender     :Gender
+         color      :FavoriteColor
+         dob        :DateOfBirth} record]
+    (str/join " | " [last-name first-name gender color (.format date-format dob)])))
 
+(defn format-for-display [records]
+  "Format all records for display"
+  (map #(format-record %) records))
 
+(defn display [records]
+  "Display the records"
+  (doseq [record records]
+    (println record)))
+
+;;
+;; Main
+;;
 (defn -main
   "Read a file of records and display them ordered by the sort-option."
   [& args]
-  (let [[file-name sort-option] args
-        is-sort-option-valid? (validate-sort-option sort-option)]
+  (let [[file-name args-sort-option] args
+        sort-option (if (instance? String args-sort-option)
+                      (Integer/parseInt args-sort-option) args-sort-option)
+        is-sort-option-valid? (validate-sort-option sort-option)
+        sort-record-fn (partial sort-record-fns sort-option)]
     (if is-sort-option-valid?
       (-> file-name
           get-lines
           split-lines
-          create-records)
+          create-records
+          sort-record-fn
+          format-for-display
+          display)
       (usage))))
 
 

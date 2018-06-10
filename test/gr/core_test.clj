@@ -54,3 +54,14 @@
           date (.parse date-format "06/07/2018")
           answer {:LastName "Last1" :FirstName "First1" :Gender "Male" :FavoriteColor "Color1" :DateOfBirth date}]
       (is (= record answer)))))
+
+
+(deftest sort-record-fns-validation
+  (testing "testing sort-record-fns-validation"
+    (is (thrown? IllegalArgumentException (sort-record-fns 0 [])))))
+
+(deftest format-record-validation
+  (testing "testing transform-record"
+    (let [record (format-record {:LastName "Last1" :FirstName "First1" :Gender "Male" :FavoriteColor "Color1" :DateOfBirth (.parse date-format "06/07/2018")})
+          answer "Last1 | First1 | Male | Color1 | 6/7/2018"]
+      (is (= record answer)))))
