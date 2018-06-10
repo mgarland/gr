@@ -1,10 +1,14 @@
 (ns gr.core
+  (:import java.text.SimpleDateFormat)
   (:require [clojure.java.io :as io]
             [clojure.string :as str])
   (:gen-class))
 
 ;; field names
 (def ^:const field-names [:LastName :FirstName :Gender :FavoriteColor :DateOfBirth])
+
+;; date format
+(def date-format (SimpleDateFormat. "M/d/yyyy"))
 
 ;;
 ;; command line argument validation
@@ -21,7 +25,7 @@
   (#{1 2 3} val))
 
 ;;
-;; File load processing
+;; Input Processing
 ;;
 
 ;; one regex to handle all delimiter possibilities
@@ -35,12 +39,23 @@
 (defn split-lines [lines]
   (map #(str/split % delims-re) lines))
 
+;; do field transformations here
+(defn transform-record [record]
+  (let [dob-dt (.parse date-format (:DateOfBirth record))]
+    (assoc record :DateOfBirth dob-dt)))
+
 ;; creates a record (HashMap) from the field values
 (defn create-record [names values]
   (zipmap names values))
 
 (defn create-records [lines]
-       (map #(create-record field-names %) lines))
+  (map #(transform-record %)
+       (map #(create-record field-names %) lines)))
+
+;;
+;; Output Processing
+;;
+
 
 (defn -main
   "Read a file of records and display them ordered by the sort-option."
