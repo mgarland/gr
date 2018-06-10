@@ -5,6 +5,7 @@
             [clojure.string :as str]
             [compojure.core :refer :all]
             [compojure.route :as route]
+            [ring.adapter.jetty :refer [run-jetty]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]])
   (:gen-class))
 
@@ -95,18 +96,21 @@
       (:help args-map) (println cli/usage)
 
       ;; run in server mode
-      (:server args-map) (println "Running as server...")
+      (:server args-map)
+      (do
+        (println "Running as server on port 3000...")
+        (run-jetty api {:port 3000}))
 
       ;; run as a script
       (and (:sort args-map) (:file args-map))
-        (let [sort-records (partial sort-record-fns (:sort args-map))]
-          (-> (:file args-map)
-              get-lines
-              split-lines
-              create-records
-              sort-records
-              format-for-display
-              display))
+      (let [sort-records (partial sort-record-fns (:sort args-map))]
+        (-> (:file args-map)
+            get-lines
+            split-lines
+            create-records
+            sort-records
+            format-for-display
+            display))
 
       ; problem
       :else (println cli/usage))

@@ -13,7 +13,10 @@
 
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [compojure "1.6.1"]
-                 [ring/ring-defaults "0.3.2"]]
+                 [ring/ring-defaults "0.3.2"]
+                 [ring/ring "1.7.0-RC1"]
+                 [ring/ring-core "1.7.0-RC1"]
+                 [ring/ring-jetty-adapter "1.7.0-RC1"]]
 
   :plugins [[lein-ring "0.12.4"]]
 
