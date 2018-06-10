@@ -1,10 +1,10 @@
 # gr
 
-FIXME: description
+GR HW
 
 ## Installation
 
-Download from http://example.com/FIXME.
+https://github.com/mgarland/gr
 
 ## Usage
 
