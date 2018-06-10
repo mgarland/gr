@@ -16,6 +16,7 @@
                  [ring/ring-defaults "0.3.2"]
                  [ring/ring "1.7.0-RC1"]
                  [ring/ring-core "1.7.0-RC1"]
+                 [ring/ring-json "0.4.0"]
                  [ring/ring-jetty-adapter "1.7.0-RC1"]]
 
   :plugins [[lein-ring "0.12.4"]]

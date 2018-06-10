@@ -1,12 +1,10 @@
 (ns gr.core
   (:import java.text.SimpleDateFormat)
   (:require [gr.cli :as cli]
+            [gr.api :as api]
             [clojure.java.io :as io]
             [clojure.string :as str]
-            [compojure.core :refer :all]
-            [compojure.route :as route]
-            [ring.adapter.jetty :refer [run-jetty]]
-            [ring.middleware.defaults :refer [wrap-defaults site-defaults]])
+            [ring.adapter.jetty :refer [run-jetty]])
   (:gen-class))
 
 ;; field names
@@ -74,17 +72,6 @@
     (println record)))
 
 ;;
-;; Rest API
-;;
-
-(defroutes api-routes
-           (GET "/" [] "Hello World")
-           (route/not-found "Not Found"))
-
-(def api
-  (wrap-defaults api-routes site-defaults))
-
-;;
 ;; Main
 ;;
 (defn -main
@@ -99,7 +86,7 @@
       (:server args-map)
       (do
         (println "Running as server on port 3000...")
-        (run-jetty api {:port 3000}))
+        (run-jetty api/api {:port 3000}))
 
       ;; run as a script
       (and (:sort args-map) (:file args-map))
@@ -113,5 +100,4 @@
             display))
 
       ; problem
-      :else (println cli/usage))
-    ))
+      :else (println cli/usage))))
