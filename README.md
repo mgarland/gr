@@ -8,25 +8,17 @@ Download from http://example.com/FIXME.
 
 ## Usage
 
-FIXME: explanation
+Load file-name, sort based on the sort-option and display on screen
 
-    $ java -jar gr-0.1.0-standalone.jar [args]
+    $ java -jar gr-0.1.0-standalone.jar file-name sort-option
 
 ## Options
 
-FIXME: listing of options this app accepts.
+Sort option: 1, 2 or 3
 
 ## Examples
 
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+java -jar gr-0.1.0-standalone.jar "/tmp/input.txt" 1
 
 ## License
 
