@@ -1,7 +1,7 @@
 (ns gr.core-test
-  (:import java.text.SimpleDateFormat)
   (:require [clojure.test :refer :all]
-            [gr.core :refer :all]))
+            [gr.core :refer :all]
+            [ring.mock.request :as mock]))
 
 (deftest sort-option-validation
   (testing "Test sort-option arg"
@@ -16,12 +16,12 @@
 (deftest main-validation-failure
   (testing "testing main"
     (is (= (-main) (usage)))
-    (is (= (-main "resources/test1.txt") (usage)))
-    (is (= (-main "resources/test1.txt" "0") (usage)))))
+    (is (= (-main "resources/test/test1.txt") (usage)))
+    (is (= (-main "resources/test/test1.txt" "0") (usage)))))
 
 (deftest get-lines-validation
   (testing "testing get-lines"
-    (is (= (count (get-lines "resources/test1.txt")) 6))))
+    (is (= (count (get-lines "resources/test/test1.txt")) 6))))
 
 (deftest split-line-validation
   (testing "testing split-lines"
@@ -65,3 +65,18 @@
     (let [record (format-record {:LastName "Last1" :FirstName "First1" :Gender "Male" :FavoriteColor "Color1" :DateOfBirth (.parse date-format "06/07/2018")})
           answer "Last1 | First1 | Male | Color1 | 6/7/2018"]
       (is (= record answer)))))
+
+
+;;
+;; Rest API tests
+;;
+
+(deftest test-api
+         (testing "main route"
+                  (let [response (api (mock/request :get "/"))]
+                       (is (= (:status response) 200))
+                       (is (= (:body response) "Hello World"))))
+
+         (testing "not-found route"
+                  (let [response (api (mock/request :get "/invalid"))]
+                       (is (= (:status response) 404)))))
